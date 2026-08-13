@@ -7,7 +7,7 @@ on:
         description: 'Branch to build from'
         type: string
         required: false
-        default: dev
+        default: main
       custom_version:
         description: 'Optional version suffix appended to the base version (e.g. umtx2-test -> 0.2.2-umtx2-test). Leave empty for auto 0.2.2-pre-<githash>.'
         type: string
