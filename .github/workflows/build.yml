@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write # تم تعديل الصلاحية لتسمح برفع وتوليد الـ Releases تلقائياً
 
 jobs:
   build:
@@ -66,17 +66,31 @@ jobs:
         run: |
           make host HOST_PAYLOAD=installer.elf
 
-      - name: List build files
+      - name: Prepare and Rename Artifacts for Release
         run: |
-          echo "===== BUILD OUTPUT ====="
-          ls -lh installer.elf webkit-autoloader-host.py || true
-          find . -maxdepth 1 -type f -name "*.elf" -o -name "*.py"
+          mkdir -p release_assets
+          cp installer.elf release_assets/webkit-autoloader-installer_v0.4.0.elf
+          cp webkit-autoloader-host.py release_assets/webkit-autoloader-host_v0.4.0.py
+          echo "===== PREPARED ASSETS ====="
+          ls -lh release_assets/
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ps5-webkit-autoloader-build
-          path: |
-            installer.elf
-            webkit-autoloader-host.py
+          path: release_assets/
           if-no-files-found: error
+
+      - name: Create GitHub Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v0.4.0
+          name: PS5 WebKit Autoloader v0.4.0 (Custom Build)
+          body: |
+            Automated build containing your custom assets and icon layout.
+          files: |
+            release_assets/webkit-autoloader-installer_v0.4.0.elf
+            release_assets/webkit-autoloader-host_v0.4.0.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
