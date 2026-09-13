@@ -3,148 +3,83 @@ name: Release On-Demand
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
-    env:
-      BUILD_TYPE: stable
-    outputs:
-      tag: ${{ steps.version.outputs.tag }}
-      version: ${{ steps.version.outputs.version }}
-      full_version: ${{ steps.version.outputs.full_version }}
+    runs-on: ubuntu-24.04
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           submodules: recursive
-
-      - name: Extract Version
-        id: version
-        run: |
-          VERSION=$(grep '#define WKAL_VERSION' include/wkali.h | awk '{print $3}' | tr -d '"' | tr -d '\r')
-          if [ -z "$VERSION" ]; then
-            echo "Error: Could not find WKAL_VERSION in include/wkali.h"
-            exit 1
-          fi
-          echo "Extracted version: $VERSION"
-          echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "full_version=$(python3 tools/gen_version.py --print)" >> $GITHUB_OUTPUT
-
-      - name: Check if release exists
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG already exists. Aborting."
-            exit 1
-          fi
-          echo "Release $TAG does not exist. Proceeding."
-
-      - name: Build WebKit Autoloader Installer & Host Script
-        run: |
-          chmod +x build_release.sh
-          ./build_release.sh
-
-      - name: Upload ELF, Script and Icon Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-build
-          path: |
-            webkit-autoloader-installer_v*.elf
-            webkit-autoloader-host_v*.py
-            assets/icon.ico
-          retention-days: 1
-
-  build-windows:
-    needs: build-linux
-    runs-on: windows-latest
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install PyInstaller
-        run: pip install pyinstaller
-
-      - name: Download Linux Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-build
-          path: .
-
-      - name: Build Windows Executable
-        run: pyinstaller --onefile --noconfirm --icon assets/icon.ico --name webkit-autoloader-host_v${{ needs.build-linux.outputs.full_version }} "webkit-autoloader-host_v${{ needs.build-linux.outputs.full_version }}.py"
-
-      - name: Upload Windows Executable Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-build
-          path: dist/webkit-autoloader-host_v*.exe
-          retention-days: 1
-
-  create-release:
-    needs: [build-linux, build-windows]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository (for git history)
-        uses: actions/checkout@v4
-        with:
           fetch-depth: 0
 
-      - name: Download Linux Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-build
-          path: .
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            make \
+            cmake \
+            ninja-build \
+            clang-18 \
+            lld-18 \
+            python3 \
+            python3-pyelftools \
+            wget \
+            xz-utils \
+            pkg-config \
+            unzip \
+            librsvg2-bin
 
-      - name: Download Windows Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-build
-          path: .
+      - name: Build PS5 SDK
+        run: |
+          git clone https://github.com /tmp/ps5-payload-sdk-source
+          cd /tmp/ps5-payload-sdk-source
+          make -j"$(nproc)" DESTDIR=/opt/ps5-payload-sdk install
 
-      - name: Create Release
+      - name: Build PS5 dependencies
+        run: |
+          chmod +x build_deps.sh
+          sudo bash build_deps.sh
+
+      - name: Build installer ELF
+        env:
+          PS5_PAYLOAD_SDK: /opt/ps5-payload-sdk
+          BUILD_TYPE: dev
+          FORCE_EXPLOIT: auto
+        run: |
+          make clean
+          make all
+
+      - name: Build PC host
+        env:
+          PS5_PAYLOAD_SDK: /opt/ps5-payload-sdk
+          BUILD_TYPE: dev
+          FORCE_EXPLOIT: auto
+        run: |
+          make host HOST_PAYLOAD=installer.elf
+
+      - name: Prepare and Rename Artifacts for Release
+        run: |
+          mkdir -p release_assets
+          cp installer.elf release_assets/webkit-autoloader-installer_v0.4.0.elf
+          cp webkit-autoloader-host.py release_assets/webkit-autoloader-host_v0.4.0.py
+          echo "===== PREPARED ASSETS ====="
+          ls -lh release_assets/
+
+      - name: Create GitHub Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.4.0
+          name: PS5 WebKit Autoloader v0.4.0 (Custom Build)
+          body: |
+            Automated custom build containing your specific assets and icon layout.
+          files: |
+            release_assets/webkit-autoloader-installer_v0.4.0.elf
+            release_assets/webkit-autoloader-host_v0.4.0.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          TAG="${{ needs.build-linux.outputs.tag }}"
-          FULL="${{ needs.build-linux.outputs.full_version }}"
-          REPO="${{ github.repository }}"
-
-          ELF="webkit-autoloader-installer_v${FULL}.elf"
-          PY="webkit-autoloader-host_v${FULL}.py"
-          EXE="webkit-autoloader-host_v${FULL}.exe"
-          EXE_BASE="$(basename "${EXE}")"
-
-          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -n "$PREV_TAG" ]; then
-            CHANGELOG="**Full Changelog** (since [${PREV_TAG}](https://github.com/${REPO}/releases/tag/${PREV_TAG})): https://github.com/${REPO}/compare/${PREV_TAG}...${TAG}"
-          else
-            CHANGELOG="First Release."
-          fi
-
-          cat > release_body.md <<EOF
-          ## Downloads
-
-          | Platform | File |
-          |---|---|
-          | **PS5** (installer payload) | [${ELF}](https://github.com/${REPO}/releases/download/${TAG}/${ELF}) |
-          | **Linux / macOS / WSL** (installer-host) | [${PY}](https://github.com/${REPO}/releases/download/${TAG}/${PY}) |
-          | **Windows** (installer-host) | [${EXE_BASE}](https://github.com/${REPO}/releases/download/${TAG}/${EXE_BASE}) |
-
-          ---
-
-          ${CHANGELOG}
-          EOF
-
-          gh release create "$TAG" \
-            --title "$TAG" \
-            --notes-file release_body.md \
-            "$ELF" "$PY" "$EXE"
