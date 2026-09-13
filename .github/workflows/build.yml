@@ -1,0 +1,82 @@
+name: Build PS5 WebKit Autoloader
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            make \
+            cmake \
+            ninja-build \
+            clang-18 \
+            lld-18 \
+            python3 \
+            python3-pyelftools \
+            wget \
+            xz-utils \
+            pkg-config \
+            unzip \
+            librsvg2-bin
+
+      - name: Build PS5 SDK
+        run: |
+          git clone https://github.com/ps5-payload-dev/sdk.git /tmp/ps5-payload-sdk-source
+          cd /tmp/ps5-payload-sdk-source
+          make -j"$(nproc)" DESTDIR=/opt/ps5-payload-sdk install
+
+      - name: Build PS5 dependencies
+        run: |
+          chmod +x build_deps.sh
+          sudo bash build_deps.sh
+
+      - name: Build installer ELF
+        env:
+          PS5_PAYLOAD_SDK: /opt/ps5-payload-sdk
+          BUILD_TYPE: dev
+          FORCE_EXPLOIT: auto
+        run: |
+          make clean
+          make all
+
+      - name: Build PC host
+        env:
+          PS5_PAYLOAD_SDK: /opt/ps5-payload-sdk
+          BUILD_TYPE: dev
+          FORCE_EXPLOIT: auto
+        run: |
+          make host HOST_PAYLOAD=installer.elf
+
+      - name: List build files
+        run: |
+          echo "===== BUILD OUTPUT ====="
+          ls -lh installer.elf webkit-autoloader-host.py || true
+          find . -maxdepth 1 -type f -name "*.elf" -o -name "*.py"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ps5-webkit-autoloader-build
+          path: |
+            installer.elf
+            webkit-autoloader-host.py
+          if-no-files-found: error
