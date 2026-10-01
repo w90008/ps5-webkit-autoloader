@@ -1,18 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="1024"
-    height="1024"
-    viewBox="0 0 1024 1024">
+<svg id="Warstwa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .bg-base { fill: url(#bgRadial); }
+      .bg-glow-1 { fill: url(#glowPurple); opacity: 0.6; }
+      .bg-glow-2 { fill: url(#glowCyan); opacity: 0.5; }
+      .bg-glow-3 { fill: url(#glowPink); opacity: 0.4; }
+      .star { fill: #ffffff; opacity: 0.8; }
+      .ring-1 { fill: none; stroke: url(#ringGrad1); stroke-width: 16; filter: url(#glowStrong); }
+      .ring-2 { fill: none; stroke: url(#ringGrad2); stroke-width: 8; opacity: 0.95; }
+      .ring-3 { fill: none; stroke: url(#ringGrad3); stroke-width: 4; opacity: 0.8; }
+      .ring-4 { fill: none; stroke: #ffffff; stroke-width: 1.5; opacity: 0.4; }
+      .shine { fill: url(#shineGrad); opacity: 0.3; }
+      .crown { fill: url(#crownGrad); filter: url(#glowSoft); }
+      .crown-jewel { fill: #ffffff; filter: url(#glowStrong); }
+      .name-text { fill: #ffffff; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: 900; text-anchor: middle; filter: url(#textShadow); }
+      .name-glow-1 { fill: #00e5ff; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: 900; text-anchor: middle; opacity: 0.5; filter: url(#glowStrong); }
+      .name-glow-2 { fill: #e040fb; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: 900; text-anchor: middle; opacity: 0.3; filter: url(#glowStrong); }
+      .sub-text { fill: url(#subGrad); font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: 900; text-anchor: middle; filter: url(#textShadow); }
+      .phone-shape { fill: url(#phoneGrad); stroke: url(#phoneStroke); stroke-width: 5; filter: url(#glowSoft); }
+      .phone-icon-bg { fill: url(#phoneIconGrad); filter: url(#glowStrong); }
+      .phone-text { fill: #ffffff; font-family: 'Arial Black', sans-serif; font-weight: 900; text-anchor: middle; filter: url(#textShadow); }
+      .service-card { fill: url(#cardGrad); stroke: url(#cardStroke); stroke-width: 2.5; opacity: 0.95; filter: url(#softShadow); }
+      .service-icon { fill: none; stroke: #ffffff; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+      .service-icon-fill { fill: #00e5ff; }
+      .service-label { fill: #ffffff; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: 700; text-anchor: middle; font-size: 24px; }
+      .bottom-symbol { fill: none; stroke: url(#bottomGrad); stroke-width: 4.5; stroke-linejoin: round; filter: url(#glowSoft); }
+    </style>
 
-    <image
-        x="0"
-        y="0"
-        width="1024"
-        height="1024"
-        preserveAspectRatio="xMidYMid meet"
-        href="logo.png"
-        xlink:href="logo.png"/>
+    <!-- خلفية زاهية متعددة الطبقات -->
+    <radialGradient id="bgRadial" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#1a0a3e"/>
+      <stop offset="30%" stop-color="#0d1b4c"/>
+      <stop offset="60%" stop-color="#061538"/>
+      <stop offset="100%" stop-color="#020814"/>
+    </radialGradient>
 
+    <radialGradient id="glowPurple" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#e040fb" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#e040fb" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="glowCyan" cx="70%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="glowPink" cx="50%" cy="80%" r="50%">
+      <stop offset="0%" stop-color="#ff4081" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff4081" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- إطارات بألوان زاهية -->
+    <linearGradient id="ringGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="33%" stop-color="#e040fb"/>
+      <stop offset="66%" stop-color="#ff4081"/>
+      <stop offset="100%" stop-color="#00e5ff"/>
+    </linearGradient>
+
+    <linearGradient id="ringGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e040fb"/>
+      <stop offset="50%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#ff4081"/>
+    </linearGradient>
+
+    <linearGradient id="ringGrad3" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff4081"/>
+      <stop offset="50%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#e040fb"/>
+    </linearGradient>
+
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.4"/>
+    </linearGradient>
+
+    <linearGradient id="crownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="50%" stop-color="#e040fb"/>
+      <stop offset="100%" stop-color="#ff4081"/>
+    </linearGradient>
+
+    <linearGradient id="subGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="50%" stop-color="#e040fb"/>
+      <stop offset="100%" stop-color="#00e5ff"/>
+    </linearGradient>
+
+    <linearGradient id="phoneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a2554"/>
+      <stop offset="100%" stop-color="#1a0a3e"/>
+    </linearGradient>
+
+    <linearGradient id="phoneStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="50%" stop-color="#e040fb"/>
+      <stop offset="100%" stop-color="#ff4081"/>
+    </linearGradient>
+
+    <linearGradient id="phoneIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#e040fb"/>
+    </linearGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a0a3e" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#061538" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <linearGradient id="cardStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#e040fb"/>
+    </linearGradient>
+
+    <linearGradient id="bottomGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="50%" stop-color="#e040fb"/>
+      <stop offset="100%" stop-color="#ff4081"/>
+    </linearGradient>
+
+    <!-- فلاتر -->
+    <filter id="glowStrong" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="glowSoft" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.7"/>
+    </filter>
+
+    <filter id="textShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.9"/>
+    </filter>
+  </defs>
+
+  <!-- الخلفية -->
+  <circle class="bg-base" cx="512" cy="512" r="495"/>
+  <circle class="bg-glow-1" cx="350" cy="350" r="350"/>
+  <circle class="bg-glow-2" cx="700" cy="450" r="350"/>
+  <circle class="bg-glow-3" cx="512" cy="750" r="350"/>
+
+  <!-- نجوم متلألئة -->
+  <circle class="star" cx="180" cy="180" r="2"/>
+  <circle class="star" cx="850" cy="220" r="2.5"/>
+  <circle class="star" cx="200" cy="800" r="2"/>
+  <circle class="star" cx="820" cy="780" r="2.5"/>
+  <circle class="star" cx="300" cy="120" r="1.5"/>
+  <circle class="star" cx="720" cy="150" r="1.5"/>
+  <circle class="star" cx="150" cy="500" r="1.5"/>
+  <circle class="star" cx="880" cy="550" r="1.5"/>
+
+  <!-- الإطارات المتوهجة الزاهية -->
+  <circle class="ring-1" cx="512" cy="512" r="490"/>
+  <circle class="ring-2" cx="512" cy="512" r="470"/>
+  <circle class="ring-3" cx="512" cy="512" r="452"/>
+  <circle class="ring-4" cx="512" cy="512" r="438"/>
+
+  <!-- انعكاس ضوئي زجاجي -->
+  <path class="shine" d="M 512 22 A 490 490 0 0 1 902 292 A 490 490 0 0 0 512 60 A 490 490 0 0 0 122 292 A 490 490 0 0 1 512 22 Z"/>
+
+  <!-- التاج -->
+  <g transform="translate(512, 245)">
+    <path class="crown" d="M-65,28 L-48,0 L-24,20 L0,-20 L24,20 L48,0 L65,28 L65,46 L-65,46 Z"/>
+    <circle class="crown-jewel" cx="-48" cy="-12" r="6"/>
+    <circle class="crown-jewel" cx="0" cy="-32" r="7"/>
+    <circle class="crown-jewel" cx="48" cy="-12" r="6"/>
+  </g>
+
+  <!-- الاسم الرئيسي -->
+  <text x="512" y="400" class="name-glow-2" font-size="102">محمد خالد</text>
+  <text x="512" y="400" class="name-glow-1" font-size="100">محمد خالد</text>
+  <text x="512" y="400" class="name-text" font-size="100">محمد خالد</text>
+
+  <!-- فاصل زخرفي -->
+  <line x1="320" y1="440" x2="704" y2="440" stroke="url(#ringGrad1)" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="512" cy="440" r="8" fill="#00e5ff" filter="url(#glowStrong)"/>
+  <circle cx="512" cy="440" r="4" fill="#ffffff"/>
+
+  <!-- النص الفرعي -->
+  <text x="512" y="535" class="sub-text" font-size="82">للشروحات</text>
+
+  <!-- رقم الهاتف -->
+  <g transform="translate(512, 650)">
+    <path class="phone-shape" d="M-280,-52 L240,-52 L280,0 L240,52 L-280,52 L-320,0 Z"/>
+    <circle class="phone-icon-bg" cx="-240" cy="0" r="34"/>
+    <path d="M-253,-13 C-260,-6 -260,6 -253,13 C-246,20 -232,20 -226,13 L-232,7 C-236,10 -242,10 -246,7 C-249,4 -249,-4 -246,-7 Z" fill="#ffffff"/>
+    <rect x="-254" y="-8" width="7" height="16" rx="3" fill="#ffffff"/>
+    <text x="30" y="22" class="phone-text" font-size="64">07714434273</text>
+  </g>
+
+  <!-- بطاقات الخدمات الزجاجية -->
+  <g transform="translate(512, 800)">
+    <!-- شروحات -->
+    <g transform="translate(-285, 0)">
+      <rect class="service-card" x="-58" y="-58" width="116" height="116" rx="22"/>
+      <path class="service-icon" d="M-26,-24 L26,-24 L14,-4 L-14,-4 Z"/>
+      <path class="service-icon" d="M-26,-24 L-26,24 L26,24 L26,-24"/>
+      <path class="service-icon-fill" d="M-18,12 L18,12 L18,18 L-18,18 Z"/>
+      <text class="service-label" y="86">شروحات</text>
+    </g>
+    <!-- تهكير -->
+    <g transform="translate(-95, 0)">
+      <rect class="service-card" x="-58" y="-58" width="116" height="116" rx="22"/>
+      <path class="service-icon" d="M-24,-30 L24,-30 L24,20 L-24,20 Z"/>
+      <path class="service-icon" d="M-10,-10 L10,-10 L10,10 L-10,10 Z"/>
+      <circle class="service-icon-fill" cx="0" cy="0" r="5"/>
+      <text class="service-label" y="86">تهكير</text>
+    </g>
+    <!-- صيانة -->
+    <g transform="translate(95, 0)">
+      <rect class="service-card" x="-58" y="-58" width="116" height="116" rx="22"/>
+      <circle class="service-icon" cx="0" cy="-12" r="20"/>
+      <path class="service-icon" d="M-16,-28 L-28,-40 M16,-28 L28,-40"/>
+      <path class="service-icon" d="M-12,-12 L12,-12"/>
+      <text class="service-label" y="86">صيانة</text>
+    </g>
+    <!-- تنزيل ألعاب -->
+    <g transform="translate(285, 0)">
+      <rect class="service-card" x="-58" y="-58" width="116" height="116" rx="22"/>
+      <path class="service-icon" d="M0,-32 L0,10 M-18,-6 L0,10 L18,-6"/>
+      <path class="service-icon" d="M-26,22 L26,22"/>
+      <path class="service-icon" d="M-26,22 L-26,34 L26,34 L26,22"/>
+      <text class="service-label" y="86">تنزيل ألعاب</text>
+    </g>
+  </g>
+
+  <!-- رموز سفلية زاهية -->
+  <g transform="translate(512, 940)">
+    <path class="bottom-symbol" d="M-85,-17 L-58,-17 L-72,19 Z"/>
+    <circle class="bottom-symbol" cx="0" cy="0" r="18"/>
+    <path class="bottom-symbol" d="M48,-17 L72,-17 M60,-17 L60,19 M48,19 L72,19"/>
+    <rect class="bottom-symbol" x="95" y="-17" width="36" height="36"/>
+  </g>
 </svg>
